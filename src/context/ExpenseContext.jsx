@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer, useEffect } from 'react'
 const ExpenseContext = createContext()
 
 const initialState = {
-  expenses: []
+  expenses: JSON.parse(localStorage.getItem('expenses')) || []
 }
 function expenseReducer(state, action) {
   switch (action.type) {
@@ -17,16 +17,6 @@ function expenseReducer(state, action) {
 }
 export function ExpenseProvider({ children }) {
   const [state, dispatch] = useReducer(expenseReducer, initialState)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('expenses')
-    if (saved) {
-      JSON.parse(saved).forEach(exp => {
-        dispatch({ type: 'ADD_EXPENSE', payload: exp })
-      })
-    }
-  }, [])
-
   useEffect(() => {
     localStorage.setItem('expenses', JSON.stringify(state.expenses))
   }, [state.expenses])
